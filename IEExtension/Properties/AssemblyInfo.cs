@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("IEExtension")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyTitle("Zephyr Capture Active Session")]
+[assembly: AssemblyDescription("Active Session")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("IEExtension")]
+[assembly: AssemblyCompany("Zephyr")]
+[assembly: AssemblyProduct("Capture")]
 [assembly: AssemblyCopyright("Copyright ©  2017")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]

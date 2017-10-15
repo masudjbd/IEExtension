@@ -12,13 +12,13 @@ namespace IEExtension
     [ClassInterface(ClassInterfaceType.None)]
     [Guid("D40C654D-7C51-4EB3-95B2-1E23905C2A2D")]
     [ProgId("MyBHO.WordHighlighter")]
-    public class WordHighlighterBHO : IObjectWithSite, IOleCommandTarget
+    public class WordHighlighterBHO : IObjectWithSite
     {
         const string DefaultTextToHighlight = "browser";
         const string ConnectUrl = "https://qa-capture.zephyr4jiracloud.com/capture";
         IWebBrowser2 browser;
         private object site;
-        static string url = ConnectUrl + "/session/user/active?userKey={0}&baseUrl={1}";
+        static string url = ConnectUrl + "/session/user/active/link?userName={0}&baseUrl={1}";
 
 
         #region Highlight Text
@@ -32,7 +32,7 @@ namespace IEExtension
                     return;
 
                 var document2 = browser.Document as IHTMLDocument2;
-                
+
                 var link = browser.LocationURL;
                 Uri uri = new Uri(link);
                 String[] hostParts = uri.Host.Split('.');
@@ -44,7 +44,7 @@ namespace IEExtension
                     string activeSessionLink = String.Empty;
                     string username = String.Empty;
                     username = browser.Document.GetElementById("header-details-user-fullname").GetAttribute("data-username");
-                    username = "masud.java"; //browser.Document.GetElementById("header-details-user-fullname").GetAttribute("data-username");
+                    // username = "masud.java"; //browser.Document.GetElementById("header-details-user-fullname").GetAttribute("data-username");
                     string jiraUrl = uri.Scheme + "://" + uri.Host;
 
 
@@ -70,7 +70,7 @@ namespace IEExtension
                         element.setAttribute("class", "myDivClass", 0);
                         document2.body.insertAdjacentHTML("afterBegin", element.outerHTML);
 
-                      
+
                     } //end atlassian.net checking
 
                 }
@@ -88,7 +88,8 @@ namespace IEExtension
         static string TextToHighlight = DefaultTextToHighlight;
         public static string RegData = "Software\\MyIEExtension";
 
-        public class Session {
+        public class Session
+        {
             public string Id { get; set; }
             public string Name { get; set; }
         }
@@ -191,29 +192,7 @@ namespace IEExtension
             return hr;
         }
         #endregion
-        #region Implementation of IOleCommandTarget
-        int IOleCommandTarget.QueryStatus(IntPtr pguidCmdGroup, uint cCmds, ref OLECMD prgCmds, IntPtr pCmdText)
-        {
-            return 0;
-        }
-        int IOleCommandTarget.Exec(IntPtr pguidCmdGroup, uint nCmdID, uint nCmdexecopt, IntPtr pvaIn, IntPtr pvaOut)
-        {
-            try
-            {
-                // Accessing the document from the command-bar.
-                var document = browser.Document as IHTMLDocument2;
-                var window = document.parentWindow;
-                var result = window.execScript(@"alert('You will now be allowed to configure the text to highlight...');");
-     
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.Message);
-            }
 
-            return 0;
-        }
-        #endregion
 
         #region Registering with regasm
         public static string RegBHO = "Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Browser Helper Objects";
@@ -237,26 +216,7 @@ namespace IEExtension
                 key.Close();
             }
 
-            // Command
-            {
-                RegistryKey registryKey = Registry.LocalMachine.OpenSubKey(RegCmd, true);
-                if (registryKey == null)
-                    registryKey = Registry.LocalMachine.CreateSubKey(RegCmd);
-                RegistryKey key = registryKey.OpenSubKey(guid);
-                if (key == null)
-                    key = registryKey.CreateSubKey(guid);
-                key.SetValue("ButtonText", "Highlighter options");
-                key.SetValue("CLSID", "{1FBA04EE-3024-11d2-8F1F-0000F87ABD16}");
-                key.SetValue("ClsidExtension", guid);
-                key.SetValue("Icon", "");
-                key.SetValue("HotIcon", "");
-                key.SetValue("Default Visible", "Yes");
-                key.SetValue("MenuText", "&Highlighter options");
-                key.SetValue("ToolTip", "Highlighter options");
-                //key.SetValue("KeyPath", "no");
-                registryKey.Close();
-                key.Close();
-            }
+
         }
 
         [ComUnregisterFunction]
@@ -269,14 +229,9 @@ namespace IEExtension
                 if (registryKey != null)
                     registryKey.DeleteSubKey(guid, false);
             }
-            // Command
-            {
-                RegistryKey registryKey = Registry.LocalMachine.OpenSubKey(RegCmd, true);
-                if (registryKey != null)
-                    registryKey.DeleteSubKey(guid, false);
-            }
+
         }
         #endregion
 
-     }
+    }
 }
